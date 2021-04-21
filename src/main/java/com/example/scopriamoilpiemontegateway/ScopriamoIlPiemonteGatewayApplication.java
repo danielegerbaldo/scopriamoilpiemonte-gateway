@@ -17,6 +17,7 @@ public class ScopriamoIlPiemonteGatewayApplication {
 	public RouteLocator customRouteLocator(RouteLocatorBuilder builder)  {
 		return builder.routes()
 				.route("path_route", r -> r.path("/v1/evento").and().method("POST", "PUT", "DELETE","GET")
+						.filters(f -> f.addResponseHeader("Cache-Control", "max-age=300")) //Keep items in cache for 5 minutes
 						.uri("http://servizio-eventi:8080"))
 				.route("path_route", r -> r.path("/v1/utente").and().method("POST", "PUT", "DELETE","GET")
 						.uri("http://servizio-utenti:8081"))
