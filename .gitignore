@@ -10,6 +10,9 @@
 # IntelliJ files
 .idea
 
+#maven build file
+target
+
 # BlueJ files
 *.ctxt
 
