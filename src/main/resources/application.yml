@@ -1,0 +1,18 @@
+server:
+  port: 80
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: servizio-eventi
+          uri: 'http://localhost:8080'
+          predicates:
+            - Path=/api/v1/evento/**
+        - id: servizio-utenti
+          uri: 'http://localhost:8081'
+          predicates:
+            - Path=/api/v1/utente/**
+        - id: servizio-sondaggi
+          uri: 'http://localhost:8082'
+          predicates:
+            - Path=/api/v1/sondaggi/**
