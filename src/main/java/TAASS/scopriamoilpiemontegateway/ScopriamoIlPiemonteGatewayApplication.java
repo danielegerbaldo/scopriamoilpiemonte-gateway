@@ -1,4 +1,4 @@
-package com.example.scopriamoilpiemontegateway;
+package TAASS.scopriamoilpiemontegateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
