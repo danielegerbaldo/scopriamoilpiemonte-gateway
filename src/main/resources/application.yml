@@ -5,18 +5,18 @@ spring:
     gateway:
       routes:
         - id: servizio-eventi
-          uri: 'http://localhost:8080'
+          uri: 'http://servizio-eventi:8080'
           predicates:
             - Path=/api/v1/evento/**
         - id: servizio-utenti
-          uri: 'http://localhost:8081'
+          uri: 'http://servizio-utenti:8081'
           predicates:
             - Path=/api/v1/utente/**
         - id: servizio-sondaggi
-          uri: 'http://localhost:8082'
+          uri: 'http://servizio-sondaggi:8082'
           predicates:
             - Path=/api/v1/sondaggi/**
         - id: servizio-comuni
-          uri: 'http://localhost:8083'
+          uri: 'http://servizio-comuni:8083'
           predicates:
             - Path=/api/v1/comune/**
