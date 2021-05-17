@@ -20,3 +20,9 @@ spring:
           uri: 'http://servizio-comuni:8083'
           predicates:
             - Path=/api/v1/comune/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedHeaders: "*"
+            allowedMethods: "*"
