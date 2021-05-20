@@ -1,11 +1,20 @@
 server:
   port: 80
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://servizio-registry:8010/eureka
 spring:
-  cloud:
-    gateway:
+  application:
+    name: ApiGateway
+  cloud.gateway:
+    discovery:
+      locator:
+        enabled: true
+        lowerCaseServiceId: true
       routes:
         - id: servizio-eventi
-          uri: 'http://servizio-eventi:8080'
+          uri: 'lb://servizio-eventi'
           predicates:
             - Path=/api/v1/evento/**
         - id: servizio-utenti
