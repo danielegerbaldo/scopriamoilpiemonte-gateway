@@ -32,13 +32,15 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
             }
 
             return webClientBuilder.build()
-                    .post()
-                    .uri("lb://USER-SERVICE/api/v1/user/validateToken?token=" + parts[1])
+                    .get()
+                    .uri("lb://USER-SERVICE/api/v1/validateToken?token=" + parts[1])
                     .retrieve().bodyToMono(UserDto.class)
                     .map(userDto -> {
                         exchange.getRequest()
                                 .mutate()
-                                .header("X-auth-user-id", String.valueOf(userDto.getId()));
+                                .header("X-auth-user-id",String.valueOf(userDto.getId()))
+                                .header("X-auth-user-email",String.valueOf(userDto.getEmail()))
+                                .header("X-auth-user-role", userDto.getRole());
                         return exchange;
                     }).flatMap(chain::filter);
         };

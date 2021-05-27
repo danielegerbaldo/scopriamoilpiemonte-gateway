@@ -9,10 +9,18 @@ import lombok.*;
 public class UserDto {
 
     private long id;
-    private String login;
-    private String token;
+    private String email;
+    private String role;
 
     public long getId() {
         return id;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }
