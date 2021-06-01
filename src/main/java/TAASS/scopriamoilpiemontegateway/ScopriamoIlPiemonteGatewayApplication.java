@@ -10,7 +10,6 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@EnableScheduling
 @EnableDiscoveryClient
 @SpringBootApplication
 public class ScopriamoIlPiemonteGatewayApplication {

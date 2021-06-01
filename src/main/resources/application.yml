@@ -7,11 +7,6 @@ eureka:
 spring:
   application:
     name: ApiGateway
-  rabbitmq:
-    host: rabbitmq
-    port: 5672
-    username: guest
-    password: guest
   cloud:
     gateway:
       discovery:
