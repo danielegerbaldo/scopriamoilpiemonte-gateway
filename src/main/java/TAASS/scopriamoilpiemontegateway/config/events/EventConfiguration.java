@@ -1,6 +1,8 @@
 package TAASS.scopriamoilpiemontegateway.config.events;
 
 
+import TAASS.scopriamoilpiemontegateway.config.proxies.EventServiceProxy;
+import TAASS.scopriamoilpiemontegateway.config.proxies.UserServiceProxy;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -24,7 +26,7 @@ public class EventConfiguration {
                 //.route(r -> r.path("/consumers").and().method("PUT").uri(eventDestinations.getConsumerServiceUrl()))
                 .route(r -> r.path("/api/v1/evento/**")
                         .and().method("POST", "PUT", "DELETE","GET")
-                        .uri(eventDestinations.getEventServiceUrl())
+                        .uri(eventDestinations.getEventServiceUrl()))
                 .build();
     }
 
@@ -34,9 +36,8 @@ public class EventConfiguration {
     }
 
     @Bean
-    public EventHandlers orderHandlers(EventServiceProxy eventService, UserService userService,
-                                       MunicipalitiesService municipalitiesService) {
-        return new EventHandlers(eventService, userService, municipalitiesService);
+    public EventHandlers eventHandlers(EventServiceProxy eventService, UserServiceProxy userService) {
+        return new EventHandlers(userService, eventService);
     }
 
     @Bean

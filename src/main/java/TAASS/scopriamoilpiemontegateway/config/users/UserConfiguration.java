@@ -1,7 +1,13 @@
 package TAASS.scopriamoilpiemontegateway.config.users;
 
 
+import TAASS.scopriamoilpiemontegateway.config.events.EventHandlers;
+import TAASS.scopriamoilpiemontegateway.config.proxies.EventServiceProxy;
+import TAASS.scopriamoilpiemontegateway.config.proxies.MunicipalityServiceProxy;
+import TAASS.scopriamoilpiemontegateway.config.proxies.UserServiceProxy;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,26 +21,25 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 @Configuration
 @EnableConfigurationProperties(UserDestinations.class)
 public class UserConfiguration {
-   /* @Bean
-    public RouteLocator consumerProxyRouting(RouteLocatorBuilder builder, EventDestinations eventDestinations) {
+   @Bean
+    public RouteLocator consumerProxyRouting(RouteLocatorBuilder builder, UserDestinations userDestinations) {
         return builder.routes()
                 //.route(r -> r.path("/consumers").and().method("POST").uri(eventDestinations.getConsumerServiceUrl()))
                 //.route(r -> r.path("/consumers").and().method("PUT").uri(eventDestinations.getConsumerServiceUrl()))
-                .route(r -> r.path("/api/v1/evento/**")
+                .route(r -> r.path("/api/v1/utente/**")
                         .and().method("POST", "PUT", "DELETE","GET")
-                        .uri(eventDestinations.getEventServiceUrl())
+                        .uri(userDestinations.getUserServiceUrl()))
                 .build();
-    }*/
-
-    @Bean
-    public RouterFunction<ServerResponse> eventHandlerRouting(EventHandlers eventHandlers) {
-        return RouterFunctions.route(GET("/info-evento/{id}"), eventHandlers::getOrderDetails);
     }
 
     @Bean
-    public EventHandlers orderHandlers(EventServiceProxy eventService, UserService userService,
-                                       MunicipalitiesService municipalitiesService) {
-        return new EventHandlers(eventService, userService, municipalitiesService);
+    public RouterFunction<ServerResponse> userHandlerRouting(UserHandlers userHandlers) {
+        return RouterFunctions.route(GET("/info-utente/{id}"), userHandlers::getUserDetails);
+    }
+
+    @Bean
+    public UserHandlers userHandlers(UserServiceProxy userService, MunicipalityServiceProxy municipalitiesService) {
+        return new UserHandlers(userService, municipalitiesService);
     }
 
     @Bean

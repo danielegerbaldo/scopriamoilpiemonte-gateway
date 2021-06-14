@@ -3,9 +3,12 @@ package TAASS.scopriamoilpiemontegateway.config.proxies;
 import TAASS.scopriamoilpiemontegateway.config.users.UserDestinations;
 import TAASS.scopriamoilpiemontegateway.dto.Utente;
 import TAASS.scopriamoilpiemontegateway.exceptions.UtenteNotFoundException;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+@Service
 public class UserServiceProxy {
     private UserDestinations userDestinations;
 
@@ -16,7 +19,7 @@ public class UserServiceProxy {
         this.client = client;
     }
 
-    public Mono<Utente> findUserById(String userId) {
+    public Mono<Utente> findUserById(long userId) {
         Mono<ClientResponse> response = client
                 .get()
                 .uri(userDestinations.getUserServiceUrl() + "/api/v1/utente/{id}", userId)
