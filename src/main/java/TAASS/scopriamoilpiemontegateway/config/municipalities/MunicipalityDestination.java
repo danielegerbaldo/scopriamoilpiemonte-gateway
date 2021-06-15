@@ -1,10 +1,13 @@
-package TAASS.scopriamoilpiemontegateway.config.municipality;
+package TAASS.scopriamoilpiemontegateway.config.municipalities;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import javax.validation.constraints.NotNull;
-@ConfigurationProperties(prefix = "municipality.destinations")
 
+//@PropertySource("classpath:urlprops.properties")
+@ConfigurationProperties(prefix = "municipality")
 public class MunicipalityDestination {
 
     @NotNull

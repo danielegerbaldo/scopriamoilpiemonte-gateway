@@ -25,10 +25,17 @@ public class EventServiceProxy {
     }
 
     public Mono<Evento> findEventById(long eventId) {
+        /*Mono<ClientResponse> response = client
+                .get()
+                .uri(eventDestinations.getEventServiceUrl() + "/api/v1/evento/info-evento/{id}", eventId)
+                .exchange();*/
+
         Mono<ClientResponse> response = client
                 .get()
                 .uri(eventDestinations.getEventServiceUrl() + "/api/v1/evento/info-evento/{id}", eventId)
-                .exchange();
+                .retrieve()
+                .bodyToMono(ClientResponse.class);
+
         return response.flatMap(resp -> {
             switch (resp.statusCode()) {
                 case OK:

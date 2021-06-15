@@ -22,7 +22,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 @EnableConfigurationProperties(UserDestinations.class)
 public class UserConfiguration {
    @Bean
-    public RouteLocator consumerProxyRouting(RouteLocatorBuilder builder, UserDestinations userDestinations) {
+    public RouteLocator userProxyRouting(RouteLocatorBuilder builder, UserDestinations userDestinations) {
         return builder.routes()
                 //.route(r -> r.path("/consumers").and().method("POST").uri(eventDestinations.getConsumerServiceUrl()))
                 //.route(r -> r.path("/consumers").and().method("PUT").uri(eventDestinations.getConsumerServiceUrl()))
@@ -42,9 +42,5 @@ public class UserConfiguration {
         return new UserHandlers(userService, municipalitiesService);
     }
 
-    @Bean
-    public WebClient webClient() {
-        return WebClient.create();
-    }
 }
 

@@ -29,7 +29,7 @@ public class EventHandlers {
     }
 
     public Mono<ServerResponse> getEventDetails (ServerRequest serverRequest){
-        long eventId = Long.parseLong(serverRequest.pathVariable("eventId"));
+        long eventId = Long.parseLong(serverRequest.pathVariable("id"));
 
         Mono<Evento> evento = eventService.findEventById(eventId);
         Mono<Utente> proprietario = evento

@@ -18,7 +18,7 @@ public class ScopriamoIlPiemonteGatewayApplication {
 		SpringApplication.run(ScopriamoIlPiemonteGatewayApplication.class, args);
 	}
 
-	@Bean
+	/*@Bean
 	public RouteLocator customRouteLocator(RouteLocatorBuilder builder)  {
 		return builder.routes()
 				//.route("registry-service", r -> r.path("/api/v1/signUp").and().method("POST", "PUT", "DELETE","GET")
@@ -34,6 +34,6 @@ public class ScopriamoIlPiemonteGatewayApplication {
 				//.route("registry-service", r -> r.path("").and().method("POST", "PUT", "DELETE","GET")
 				//		.uri("http://servizio-registry:8010"))
 				.build();
-	}
+	}*/
 
 }
