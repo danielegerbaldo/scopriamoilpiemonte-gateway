@@ -18,6 +18,10 @@ spring:
           uri: lb://USER-SERVICE
           predicates:
             Path=/api/v1/login
+        - id: logout
+          uri: lb://USER-SERVICE
+          predicates:
+            Path=/api/v1/logout
         - id: sign-up
           uri: lb://USER-SERVICE
           predicates:

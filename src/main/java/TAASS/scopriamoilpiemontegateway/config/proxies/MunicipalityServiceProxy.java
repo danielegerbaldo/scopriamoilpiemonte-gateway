@@ -2,6 +2,7 @@ package TAASS.scopriamoilpiemontegateway.config.proxies;
 
 import TAASS.scopriamoilpiemontegateway.config.municipalities.MunicipalityDestination;
 import TAASS.scopriamoilpiemontegateway.dto.Comune;
+import TAASS.scopriamoilpiemontegateway.dto.Utente;
 import TAASS.scopriamoilpiemontegateway.exceptions.ComuneNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -13,29 +14,21 @@ import reactor.core.publisher.Mono;
 public class MunicipalityServiceProxy {
     private MunicipalityDestination municipalityDestination;
 
-    private WebClient client;
+    private final WebClient.Builder webClientBuilder;
 
     private RestTemplate restTemplate;
 
-    public MunicipalityServiceProxy(MunicipalityDestination municipalityDestination, WebClient client) {
+    public MunicipalityServiceProxy(MunicipalityDestination municipalityDestination, WebClient.Builder webClientBuilder) {
         this.municipalityDestination = municipalityDestination;
-        this.client = client;
+        this.webClientBuilder = webClientBuilder;
     }
 
     public Mono<Comune> findMunicipalityById(long municipalityId) {
-        Mono<ClientResponse> response = client
+        Mono<Comune> response = webClientBuilder.build()
                 .get()
                 .uri(municipalityDestination.getMunicipalityServiceUrl() + "/api/v1/evento/info-evento/{id}", municipalityId)
-                .exchange();
-        return response.flatMap(resp -> {
-            switch (resp.statusCode()) {
-                case OK:
-                    return resp.bodyToMono(Comune.class);
-                case NOT_FOUND:
-                    return Mono.error(new ComuneNotFoundException());
-                default:
-                    return Mono.error(new RuntimeException("Unknown" + resp.statusCode()));
-            }
-        });
+                .retrieve()
+                .bodyToMono(Comune.class);
+        return response;
     }
 }

@@ -3,6 +3,7 @@ package TAASS.scopriamoilpiemontegateway.config.events;
 
 import TAASS.scopriamoilpiemontegateway.config.proxies.EventServiceProxy;
 import TAASS.scopriamoilpiemontegateway.config.proxies.UserServiceProxy;
+import TAASS.scopriamoilpiemontegateway.filters.AuthFilter;
 import io.netty.resolver.DefaultAddressResolverGroup;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -36,8 +37,8 @@ public class EventConfiguration {
     }*/
 
     @Bean
-    public RouterFunction<ServerResponse> eventHandlerRouting(EventHandlers eventHandlers) {
-        return RouterFunctions.route(GET("/api/v1/evento/info-evento/{id}"), eventHandlers::getEventDetails);
+    public RouterFunction<ServerResponse> eventHandlerRouting(WebClient.Builder webClientBuilder, EventHandlers eventHandlers) {
+        return RouterFunctions.route(GET("/api/v1/evento-composed/info-evento/{id}"), eventHandlers::getEventDetails);
     }
 
     @Bean
@@ -48,9 +49,9 @@ public class EventConfiguration {
     @Bean
     @LoadBalanced
     public WebClient webClient() {
-        HttpClient client =  HttpClient.create().resolver(DefaultAddressResolverGroup.INSTANCE);
-        ClientHttpConnector connector = new ReactorClientHttpConnector(client);
-        return WebClient.builder().clientConnector(connector).build();
+        //HttpClient client =  HttpClient.create().resolver(DefaultAddressResolverGroup.INSTANCE);
+        //ClientHttpConnector connector = new ReactorClientHttpConnector(client);
+        return WebClient.create();
     }
 }
 

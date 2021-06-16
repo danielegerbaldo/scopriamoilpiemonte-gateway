@@ -1,6 +1,7 @@
 package TAASS.scopriamoilpiemontegateway.config.proxies;
 
 import TAASS.scopriamoilpiemontegateway.config.users.UserDestinations;
+import TAASS.scopriamoilpiemontegateway.dto.Evento;
 import TAASS.scopriamoilpiemontegateway.dto.Utente;
 import TAASS.scopriamoilpiemontegateway.exceptions.UtenteNotFoundException;
 import org.springframework.stereotype.Service;
@@ -12,27 +13,19 @@ import reactor.core.publisher.Mono;
 public class UserServiceProxy {
     private UserDestinations userDestinations;
 
-    private WebClient client;
+    private final WebClient.Builder webClientBuilder;
 
-    public UserServiceProxy(UserDestinations userDestinations, WebClient client) {
+    public UserServiceProxy(UserDestinations userDestinations, WebClient.Builder webClientBuilder) {
         this.userDestinations = userDestinations;
-        this.client = client;
+        this.webClientBuilder = webClientBuilder;
     }
 
     public Mono<Utente> findUserById(long userId) {
-        Mono<ClientResponse> response = client
+        Mono<Utente> response = webClientBuilder.build()
                 .get()
-                .uri(userDestinations.getUserServiceUrl() + "/api/v1/utente/{id}", userId)
-                .exchange();
-        return response.flatMap(resp -> {
-            switch (resp.statusCode()) {
-                case OK:
-                    return resp.bodyToMono(Utente.class);
-                case NOT_FOUND:
-                    return Mono.error(new UtenteNotFoundException());
-                default:
-                    return Mono.error(new RuntimeException("Unknown" + resp.statusCode()));
-            }
-        });
+                .uri(userDestinations.getUserServiceUrl() + "/api/v1/utente/getUser/{id}", userId)
+                .retrieve()
+                .bodyToMono(Utente.class);
+        return response;
     }
 }

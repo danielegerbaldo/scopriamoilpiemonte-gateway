@@ -14,14 +14,13 @@ import reactor.core.publisher.Mono;
 @Service
 public class EventServiceProxy {
     private EventDestination eventDestinations;
-
-    private WebClient client;
+    private final WebClient.Builder webClientBuilder;
 
     private RestTemplate restTemplate;
 
-    public EventServiceProxy(EventDestination eventDestinations, WebClient client) {
+    public EventServiceProxy(EventDestination eventDestinations, WebClient.Builder webClientBuilder) {
         this.eventDestinations = eventDestinations;
-        this.client = client;
+        this.webClientBuilder = webClientBuilder;
     }
 
     public Mono<Evento> findEventById(long eventId) {
@@ -30,13 +29,15 @@ public class EventServiceProxy {
                 .uri(eventDestinations.getEventServiceUrl() + "/api/v1/evento/info-evento/{id}", eventId)
                 .exchange();*/
 
-        Mono<ClientResponse> response = client
+        Mono<Evento> response = webClientBuilder.build()
                 .get()
                 .uri(eventDestinations.getEventServiceUrl() + "/api/v1/evento/info-evento/{id}", eventId)
                 .retrieve()
-                .bodyToMono(ClientResponse.class);
+                .bodyToMono(Evento.class);
 
-        return response.flatMap(resp -> {
+        return response;
+
+        /*return response.flatMap(resp -> {
             switch (resp.statusCode()) {
                 case OK:
                     return resp.bodyToMono(Evento.class);
@@ -45,7 +46,7 @@ public class EventServiceProxy {
                 default:
                     return Mono.error(new RuntimeException("Unknown" + resp.statusCode()));
             }
-        });
+        });*/
     }
 
 
