@@ -4,17 +4,17 @@ import TAASS.scopriamoilpiemontegateway.config.proxies.EventServiceProxy;
 import TAASS.scopriamoilpiemontegateway.config.proxies.UserServiceProxy;
 import TAASS.scopriamoilpiemontegateway.dto.Evento;
 import TAASS.scopriamoilpiemontegateway.dto.EventoResponse;
+import TAASS.scopriamoilpiemontegateway.dto.UserDto;
 import TAASS.scopriamoilpiemontegateway.dto.Utente;
 import TAASS.scopriamoilpiemontegateway.exceptions.EventNotFoundException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
-import reactor.util.function.Tuple4;
 
-import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 
@@ -30,11 +30,20 @@ public class EventHandlers {
 
     public Mono<ServerResponse> getEventDetails (ServerRequest serverRequest){
         long eventId = Long.parseLong(serverRequest.pathVariable("id"));
+        AtomicReference<String> role = new AtomicReference<String>();
 
-        Mono<Evento> evento = eventService.findEventById(eventId);
+        String token = serverRequest.headers().header(HttpHeaders.AUTHORIZATION).get(0);
+
+        Mono<UserDto> user = userService.validateUserToken(token);
+
+        Mono<Evento> evento = user.flatMap(us -> {
+            role.set(us.getRole());
+            return eventService.findEventById(eventId, us.getRole());
+        });
+
         Mono<Utente> proprietario = evento
                 .flatMap(ev -> userService
-                .findUserById(ev.getProprietario()));
+                .findUserById(ev.getProprietario(),role.get()));
 
         Mono<Tuple2<Evento, Utente>> combined = Mono.zip(evento, proprietario);
 

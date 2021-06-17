@@ -9,6 +9,7 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @EnableDiscoveryClient
 @SpringBootApplication
@@ -18,8 +19,8 @@ public class ScopriamoIlPiemonteGatewayApplication {
 		SpringApplication.run(ScopriamoIlPiemonteGatewayApplication.class, args);
 	}
 
-	/*@Bean
-	public RouteLocator customRouteLocator(RouteLocatorBuilder builder)  {
+	@Bean
+	public RouteLocator customRouteLocator(WebClient.Builder webClientBuilder, RouteLocatorBuilder builder)  {
 		return builder.routes()
 				//.route("registry-service", r -> r.path("/api/v1/signUp").and().method("POST", "PUT", "DELETE","GET")
 				//		.uri("lb://USER-SERVICE"))
@@ -27,13 +28,13 @@ public class ScopriamoIlPiemonteGatewayApplication {
 				//		.filters(f -> f.addResponseHeader("Cache-Control", "max-age=300")) //Keep items in cache for 5 minutes
 				//		.uri("lb://EVENT-SERVICE"))
 				//.route("user-service", r -> r.path("/api/v1/utente/**").and().method("POST", "PUT", "DELETE","GET")
-				//		.filters(f -> f.filter(AuthFilter.class,0))
+				//		.filters(f -> f.filter(new AuthFilter(webClientBuilder).apply(new AuthFilter.Config()))))
 				//		.uri("lb://USER-SERVICE"))
 				//.route("municipality-service", r -> r.path("/api/v1/comune/**").and().method("POST", "PUT", "DELETE","GET")
 				//		.uri("lb://MUNICIPALITY-SERVICE"))
 				//.route("registry-service", r -> r.path("").and().method("POST", "PUT", "DELETE","GET")
 				//		.uri("http://servizio-registry:8010"))
 				.build();
-	}*/
+	}
 
 }

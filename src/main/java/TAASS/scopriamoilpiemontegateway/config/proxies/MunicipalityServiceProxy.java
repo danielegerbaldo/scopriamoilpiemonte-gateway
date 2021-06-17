@@ -23,10 +23,11 @@ public class MunicipalityServiceProxy {
         this.webClientBuilder = webClientBuilder;
     }
 
-    public Mono<Comune> findMunicipalityById(long municipalityId) {
+    public Mono<Comune> findMunicipalityById(long municipalityId, String role) {
         Mono<Comune> response = webClientBuilder.build()
                 .get()
-                .uri(municipalityDestination.getMunicipalityServiceUrl() + "/api/v1/evento/info-evento/{id}", municipalityId)
+                .uri(municipalityDestination.getMunicipalityServiceUrl() + "/api/v1/comune/info-comune/{id}", municipalityId)
+                .header("X-auth-user-role", role)
                 .retrieve()
                 .bodyToMono(Comune.class);
         return response;

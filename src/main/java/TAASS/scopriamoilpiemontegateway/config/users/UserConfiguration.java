@@ -21,7 +21,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 @Configuration
 @EnableConfigurationProperties(UserDestinations.class)
 public class UserConfiguration {
-   @Bean
+  /* @Bean
     public RouteLocator userProxyRouting(RouteLocatorBuilder builder, UserDestinations userDestinations) {
         return builder.routes()
                 //.route(r -> r.path("/consumers").and().method("POST").uri(eventDestinations.getConsumerServiceUrl()))
@@ -30,11 +30,11 @@ public class UserConfiguration {
                         .and().method("POST", "PUT", "DELETE","GET")
                         .uri(userDestinations.getUserServiceUrl()))
                 .build();
-    }
+    }*/
 
     @Bean
     public RouterFunction<ServerResponse> userHandlerRouting(UserHandlers userHandlers) {
-        return RouterFunctions.route(GET("/info-utente/{id}"), userHandlers::getUserDetails);
+        return RouterFunctions.route(GET("/api/v1/utente-composed/info-utente/{id}"), userHandlers::getUserDetails);
     }
 
     @Bean

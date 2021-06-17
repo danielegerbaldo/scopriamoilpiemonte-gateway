@@ -23,7 +23,7 @@ public class EventServiceProxy {
         this.webClientBuilder = webClientBuilder;
     }
 
-    public Mono<Evento> findEventById(long eventId) {
+    public Mono<Evento> findEventById(long eventId, String role) {
         /*Mono<ClientResponse> response = client
                 .get()
                 .uri(eventDestinations.getEventServiceUrl() + "/api/v1/evento/info-evento/{id}", eventId)
@@ -32,6 +32,7 @@ public class EventServiceProxy {
         Mono<Evento> response = webClientBuilder.build()
                 .get()
                 .uri(eventDestinations.getEventServiceUrl() + "/api/v1/evento/info-evento/{id}", eventId)
+                .header("X-auth-user-role",role)
                 .retrieve()
                 .bodyToMono(Evento.class);
 
