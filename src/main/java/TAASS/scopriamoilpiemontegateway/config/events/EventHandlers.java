@@ -50,8 +50,7 @@ public class EventHandlers {
 
         Mono<List<Utente>> iscritti = evento
                 .flatMap(ev -> {
-                    ArrayList<Long> idList = new ArrayList<Long>();
-                    idList.addAll(ev.getIscritti());
+                    ArrayList<Long> idList = new ArrayList<Long>(ev.getIscritti());
                     return userService.findUsersByIds(idList,role.get());
                 });
 

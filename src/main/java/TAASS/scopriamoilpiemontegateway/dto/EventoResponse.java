@@ -1,8 +1,11 @@
 package TAASS.scopriamoilpiemontegateway.dto;
 
 import reactor.util.function.Tuple2;
+import reactor.util.function.Tuple3;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class EventoResponse {
@@ -57,21 +60,15 @@ public class EventoResponse {
         iscritti = null;
     }
 
-    /*public static EventoResponse makeEventoResponse(Evento evento, Utente proprietario){
-        EventoResponse eventoResponse = new EventoResponse(evento);
-        eventoResponse.setProprietario(proprietario);
-        return eventoResponse;
-    }*/
-
-    public static EventoResponse makeEventoResponse(Tuple2<Evento, Utente> info){
+    public static EventoResponse makeEventoResponse(Tuple3<Evento, Utente, List<Utente>> info){
         EventoResponse eventoResponse = new EventoResponse(info.getT1());
         eventoResponse.setProprietario(info.getT2());
+        eventoResponse.setIscritti(new HashSet<Utente>(info.getT3()));
         return eventoResponse;
     }
 
     public EventoResponse() {
     }
-
 
 
     public Long getId() {
