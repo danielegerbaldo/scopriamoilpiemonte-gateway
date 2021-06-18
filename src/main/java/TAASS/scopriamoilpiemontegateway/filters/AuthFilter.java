@@ -18,9 +18,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
     @Override
     public GatewayFilter apply(Config config) {
-        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------");
-        System.out.println("AUTHFILTER CLASSIC");
-        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
         return (exchange, chain) -> {
             if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 throw new RuntimeException("Missing authorization information");

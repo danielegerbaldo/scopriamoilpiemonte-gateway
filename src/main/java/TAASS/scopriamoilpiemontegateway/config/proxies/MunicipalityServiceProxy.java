@@ -2,11 +2,8 @@ package TAASS.scopriamoilpiemontegateway.config.proxies;
 
 import TAASS.scopriamoilpiemontegateway.config.municipalities.MunicipalityDestination;
 import TAASS.scopriamoilpiemontegateway.dto.Comune;
-import TAASS.scopriamoilpiemontegateway.dto.Utente;
-import TAASS.scopriamoilpiemontegateway.exceptions.ComuneNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 

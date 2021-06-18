@@ -1,15 +1,14 @@
 package TAASS.scopriamoilpiemontegateway.config.proxies;
 
 import TAASS.scopriamoilpiemontegateway.config.users.UserDestinations;
-import TAASS.scopriamoilpiemontegateway.dto.Evento;
 import TAASS.scopriamoilpiemontegateway.dto.UserDto;
 import TAASS.scopriamoilpiemontegateway.dto.Utente;
-import TAASS.scopriamoilpiemontegateway.exceptions.UtenteNotFoundException;
-import org.springframework.http.HttpHeaders;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Service
 public class UserServiceProxy {
@@ -29,6 +28,19 @@ public class UserServiceProxy {
                 .header("X-auth-user-role",role)
                 .retrieve()
                 .bodyToMono(Utente.class);
+        return response;
+    }
+
+    public Mono<List<Utente>> findUsersByIds(List<Long> userIds, String role) {
+
+        Mono<List<Utente>> response = webClientBuilder.build()
+                .post()
+                .uri(userDestinations.getUserServiceUrl() + "/api/v1/utente/getUsersByIdList")
+                .body(Mono.just(userIds), new ParameterizedTypeReference<List<Long>>() {})
+                .header("X-auth-user-role",role)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<Utente>>() {});
+
         return response;
     }
 

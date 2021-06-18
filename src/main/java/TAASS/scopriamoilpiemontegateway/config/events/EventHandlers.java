@@ -13,7 +13,10 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
+import reactor.util.function.Tuple3;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromObject;
@@ -45,7 +48,14 @@ public class EventHandlers {
                 .flatMap(ev -> userService
                 .findUserById(ev.getProprietario(),role.get()));
 
-        Mono<Tuple2<Evento, Utente>> combined = Mono.zip(evento, proprietario);
+        Mono<List<Utente>> iscritti = evento
+                .flatMap(ev -> {
+                    ArrayList<Long> idList = new ArrayList<Long>();
+                    idList.addAll(ev.getIscritti());
+                    return userService.findUsersByIds(idList,role.get());
+                });
+
+        Mono<Tuple3<Evento, Utente, List<Utente>>> combined = Mono.zip(evento, proprietario, iscritti);
 
         Mono<EventoResponse> eventoResponse = combined.map(EventoResponse::makeEventoResponse);
 

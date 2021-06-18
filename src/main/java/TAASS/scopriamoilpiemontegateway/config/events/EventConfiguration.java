@@ -18,16 +18,6 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 @Configuration
 @EnableConfigurationProperties(EventDestination.class)
 public class EventConfiguration {
-    /*@Bean
-    public RouteLocator eventProxyRouting(RouteLocatorBuilder builder, EventDestination eventDestinations) {
-        return builder.routes()
-                //.route(r -> r.path("/consumers").and().method("POST").uri(eventDestinations.getConsumerServiceUrl()))
-                //.route(r -> r.path("/consumers").and().method("PUT").uri(eventDestinations.getConsumerServiceUrl()))
-                .route(r -> r.path("/api/v1/evento/**")
-                        .and().method("POST", "PUT", "DELETE","GET")
-                        .uri(eventDestinations.getEventServiceUrl()))
-                .build();
-    }*/
 
     @Bean
     public RouterFunction<ServerResponse> eventHandlerRouting(WebClient.Builder webClientBuilder, EventHandlers eventHandlers) {
@@ -42,8 +32,6 @@ public class EventConfiguration {
     @Bean
     @LoadBalanced
     public WebClient webClient() {
-        //HttpClient client =  HttpClient.create().resolver(DefaultAddressResolverGroup.INSTANCE);
-        //ClientHttpConnector connector = new ReactorClientHttpConnector(client);
         return WebClient.create();
     }
 }
