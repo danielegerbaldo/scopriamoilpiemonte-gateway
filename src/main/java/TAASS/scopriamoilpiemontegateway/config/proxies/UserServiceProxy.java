@@ -21,24 +21,25 @@ public class UserServiceProxy {
         this.webClientBuilder = webClientBuilder;
     }
 
-    public Mono<Utente> findUserById(long userId, String role,long id) {
+    public Mono<Utente> findUserById(long userId, UserDto user) {
         Mono<Utente> response = webClientBuilder.build()
                 .get()
                 .uri(userDestinations.getUserServiceUrl() + "/api/v1/utente/getUser/{id}", userId)
-                .header("X-auth-user-role",role)
-                .header("X-auth-user-id",String.valueOf(id))
+                .header("X-auth-user-role",user.getRole())
+                .header("X-auth-user-id",String.valueOf(user.getId()))
                 .retrieve()
                 .bodyToMono(Utente.class);
         return response;
     }
 
-    public Mono<List<Utente>> findUsersByIds(List<Long> userIds, String role) {
+    public Mono<List<Utente>> findUsersByIds(List<Long> userIds, UserDto user) {
 
         Mono<List<Utente>> response = webClientBuilder.build()
                 .post()
                 .uri(userDestinations.getUserServiceUrl() + "/api/v1/utente/getUsersByIdList")
                 .body(Mono.just(userIds), new ParameterizedTypeReference<List<Long>>() {})
-                .header("X-auth-user-role",role)
+                .header("X-auth-user-role",user.getRole())
+                .header("X-auth-user-id",String.valueOf(user.getId()))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<Utente>>() {});
 

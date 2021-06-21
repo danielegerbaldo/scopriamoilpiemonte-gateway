@@ -31,28 +31,28 @@ public class UserHandlers {
 
     public Mono<ServerResponse> getUserDetails(ServerRequest serverRequest) {
         long userId = Long.parseLong(serverRequest.pathVariable("id"));
-        AtomicReference<String> role = new AtomicReference<String>();
+        AtomicReference<UserDto> utenteLog = new AtomicReference<UserDto>();
 
         String token = serverRequest.headers().header(HttpHeaders.AUTHORIZATION).get(0);
 
         Mono<UserDto> user = userService.validateUserToken(token);
 
         Mono<Utente> utente = user.flatMap(us -> {
-            role.set(us.getRole());
-            return userService.findUserById(userId,us.getRole(), us.getId());
+            utenteLog.set(us);
+            return userService.findUserById(userId,us);
         });
 
 
         Mono<Comune> comuneRes = utente
                 .flatMap(
                         us -> municipalityService
-                                .findMunicipalityById(us.getComuneResidenza(),role.get())
+                                .findMunicipalityById(us.getComuneResidenza(),utenteLog.get())
                 );
 
         Mono<Optional<Comune>> comuneDip = utente
                 .flatMap(
                         us -> municipalityService
-                                .findMunicipalityById(us.getDipendenteDiComune(),role.get())
+                                .findMunicipalityById(us.getDipendenteDiComune(),utenteLog.get())
                                 .map(Optional::of)
                                 .onErrorReturn(Optional.empty())
                 );

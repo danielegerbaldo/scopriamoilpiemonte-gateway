@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 import reactor.util.function.Tuple3;
 
 import java.util.ArrayList;
@@ -34,36 +33,28 @@ public class EventHandlers {
     public Mono<ServerResponse> getEventDetails (ServerRequest serverRequest){
         long eventId = Long.parseLong(serverRequest.pathVariable("id"));
 
-        AtomicReference<String> role = new AtomicReference<String>();
-        AtomicReference<Long> userID = new AtomicReference<Long>();
+        AtomicReference<UserDto> utente = new AtomicReference<UserDto>();
 
         String token = serverRequest.headers().header(HttpHeaders.AUTHORIZATION).get(0);
 
         Mono<UserDto> user = userService.validateUserToken(token);
 
         Mono<Evento> evento = user.flatMap(us -> {
-            role.set(us.getRole());
-            userID.set(us.getId());
-            return eventService.findEventById(eventId, us.getRole(), us.getId());
+            utente.set(us);
+            return eventService.findEventById(eventId, us);
         });
 
         Mono<Utente> proprietario = evento
                 .flatMap(ev -> userService
-                .findUserById(ev.getProprietario(),role.get(), userID.get()));
+                .findUserById(ev.getProprietario(),utente.get()));
 
         Mono<List<Utente>> iscritti = evento
                 .flatMap(ev -> {
                     ArrayList<Long> idList = new ArrayList<Long>(ev.getIscritti());
-                    return userService.findUsersByIds(idList,role.get());
+                    return userService.findUsersByIds(idList,utente.get());
                 });
 
         Mono<Tuple3<Evento, Utente, List<Utente>>> combined = Mono.zip(evento, proprietario, iscritti);
-
-        //verifoco a questo punto se l'untente può ricevere questa risposta in quanto devo verificare se
-        //  1. è un admin
-        //  2. se è un sindaco deve esserlo del comune dell'evento
-        //  3. se è un pubblicatore deve essere proprietario dell'evento
-        // TODO: TROVARE UN MODO PER OTTENERE L'HEADER
 
         Mono<EventoResponse> eventoResponse = combined.map(EventoResponse::makeEventoResponse);
 
@@ -72,67 +63,6 @@ public class EventHandlers {
                 .body(fromObject(er)))
                 .onErrorResume(EventNotFoundException.class, e -> ServerResponse.notFound().build());
     }
-
-    public Mono<ServerResponse> getEventDetails2(ServerRequest serverRequest) {
-        //long eventId = Long.parseLong(serverRequest.pathVariable("eventId"));
-
-        /*Mono<Evento> evento = eventService.findEventById(eventId);
-        Mono<Utente> proprietario;
-
-        Mono<Optional<Utente>> utente = userService
-                .findUserById(evento.toFuture().get().getProprietario())
-                .map(Optional::of)
-                .onErrorReturn(Optional.empty());
-
-        evento.doOnSuccess(new Consumer<Evento>() {
-            @Override
-            public void accept(Evento evento) {
-                Mono<Utente> proprietario = userService.findUserById(evento.getProprietario());
-
-            }
-        });*/
-
-        /*Evento evento = eventService.serialFindEventById(eventId);
-
-
-        Mono<Optional<Utente>> proprietario = userService
-                .findUserById(evento.getProprietario())
-                .map(Optional::of)
-                .onErrorReturn(Optional.empty());*/
-
-        /*proprietario.doOnSuccess(new Consumer<Optional<Utente>>() {
-            @Override
-            public void accept(Optional<Utente> utente) {
-                if(utente.isPresent()){
-                    eventoResponse.setProprietario(utente.get());
-                }
-            }
-        });*/
-
-        /*Tuple2<Evento, Utente> tuple2;
-
-        Mono<Tuple2<Evento, Utente>> combined =  Mono.zip(evento, proprietario);
-
-        Mono<Optional<EventoResponse>> eventoResponse = proprietario.map(EventoResponse::makeEventoResponse);
-
-        //restituisce un mono una volta finito il mapping
-        return eventoResponse.flatMap(er -> ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(fromObject(er)))
-                .onErrorResume(EventNotFoundException.class, e -> ServerResponse.notFound().build());*/
-
-        /*Mono<Tuple4<Evento, Optional<Utente>, Optional<BillInfo>>> combined =
-                Mono.zip(evento, utente);
-
-        Mono<Evento> orderDetails = combined.map(Evento::makeEventoDetails);
-
-        return orderDetails.flatMap(od -> ServerResponse.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(fromObject(od)))
-                .onErrorResume(OrderNotFoundException.class, e -> ServerResponse.notFound().build());*/
-        return null;
-    }
-
 
 
 }

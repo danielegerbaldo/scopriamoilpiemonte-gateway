@@ -2,6 +2,7 @@ package TAASS.scopriamoilpiemontegateway.config.proxies;
 
 import TAASS.scopriamoilpiemontegateway.config.municipalities.MunicipalityDestination;
 import TAASS.scopriamoilpiemontegateway.dto.Comune;
+import TAASS.scopriamoilpiemontegateway.dto.UserDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,11 +21,12 @@ public class MunicipalityServiceProxy {
         this.webClientBuilder = webClientBuilder;
     }
 
-    public Mono<Comune> findMunicipalityById(long municipalityId, String role) {
+    public Mono<Comune> findMunicipalityById(long municipalityId, UserDto user) {
         Mono<Comune> response = webClientBuilder.build()
                 .get()
                 .uri(municipalityDestination.getMunicipalityServiceUrl() + "/api/v1/comune/info-comune/{id}", municipalityId)
-                .header("X-auth-user-role", role)
+                .header("X-auth-user-role",user.getRole())
+                .header("X-auth-user-id",String.valueOf(user.getId()))
                 .retrieve()
                 .bodyToMono(Comune.class);
         return response;
