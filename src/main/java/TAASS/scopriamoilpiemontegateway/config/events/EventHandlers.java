@@ -33,7 +33,9 @@ public class EventHandlers {
 
     public Mono<ServerResponse> getEventDetails (ServerRequest serverRequest){
         long eventId = Long.parseLong(serverRequest.pathVariable("id"));
+
         AtomicReference<String> role = new AtomicReference<String>();
+        AtomicReference<Long> userID = new AtomicReference<Long>();
 
         String token = serverRequest.headers().header(HttpHeaders.AUTHORIZATION).get(0);
 
@@ -41,12 +43,13 @@ public class EventHandlers {
 
         Mono<Evento> evento = user.flatMap(us -> {
             role.set(us.getRole());
-            return eventService.findEventById(eventId, us.getRole());
+            userID.set(us.getId());
+            return eventService.findEventById(eventId, us.getRole(), us.getId());
         });
 
         Mono<Utente> proprietario = evento
                 .flatMap(ev -> userService
-                .findUserById(ev.getProprietario(),role.get()));
+                .findUserById(ev.getProprietario(),role.get(), userID.get()));
 
         Mono<List<Utente>> iscritti = evento
                 .flatMap(ev -> {
@@ -55,6 +58,12 @@ public class EventHandlers {
                 });
 
         Mono<Tuple3<Evento, Utente, List<Utente>>> combined = Mono.zip(evento, proprietario, iscritti);
+
+        //verifoco a questo punto se l'untente può ricevere questa risposta in quanto devo verificare se
+        //  1. è un admin
+        //  2. se è un sindaco deve esserlo del comune dell'evento
+        //  3. se è un pubblicatore deve essere proprietario dell'evento
+        // TODO: TROVARE UN MODO PER OTTENERE L'HEADER
 
         Mono<EventoResponse> eventoResponse = combined.map(EventoResponse::makeEventoResponse);
 

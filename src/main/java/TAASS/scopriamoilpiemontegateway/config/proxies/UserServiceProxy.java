@@ -21,11 +21,12 @@ public class UserServiceProxy {
         this.webClientBuilder = webClientBuilder;
     }
 
-    public Mono<Utente> findUserById(long userId, String role) {
+    public Mono<Utente> findUserById(long userId, String role,long id) {
         Mono<Utente> response = webClientBuilder.build()
                 .get()
                 .uri(userDestinations.getUserServiceUrl() + "/api/v1/utente/getUser/{id}", userId)
                 .header("X-auth-user-role",role)
+                .header("X-auth-user-id",String.valueOf(id))
                 .retrieve()
                 .bodyToMono(Utente.class);
         return response;

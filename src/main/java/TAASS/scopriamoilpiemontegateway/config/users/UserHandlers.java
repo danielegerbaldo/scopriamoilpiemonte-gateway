@@ -39,7 +39,7 @@ public class UserHandlers {
 
         Mono<Utente> utente = user.flatMap(us -> {
             role.set(us.getRole());
-            return userService.findUserById(userId,us.getRole());
+            return userService.findUserById(userId,us.getRole(), us.getId());
         });
 
 

@@ -39,7 +39,9 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                     .map(userDto -> {
                         exchange.getRequest()
                                 .mutate()
-                                .header("X-auth-user-role",String.valueOf(userDto.getRole()));
+                                .header("X-auth-user-role",String.valueOf(userDto.getRole()))
+                                .header("X-auth-user-id", String.valueOf(userDto.getId()))
+                                .header("X-auth-user-comune-dipendente-id", String.valueOf(userDto.getDipendenteDiComune()));
                         return exchange;
                     }).flatMap(chain::filter);
         };
