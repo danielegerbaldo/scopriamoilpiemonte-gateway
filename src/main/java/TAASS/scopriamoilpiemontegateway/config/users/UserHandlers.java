@@ -39,29 +39,36 @@ public class UserHandlers {
 
         Mono<Utente> utente = user.flatMap(us -> {
             utenteLog.set(us);
+            //System.out.println("UTENTELog: "+ us.getEmail());
             return userService.findUserById(userId,us);
         });
 
 
         Mono<Comune> comuneRes = utente
                 .flatMap(
-                        us -> municipalityService
-                                .findMunicipalityById(us.getComuneResidenza(),utenteLog.get())
-                );
+                        us -> {
+                            //System.out.println("UTENTECompleto: " + us.getEmail());
+                            return municipalityService
+                                    .findMunicipalityById(us.getComuneResidenza(), utenteLog.get());
+                        });
 
         Mono<Optional<Comune>> comuneDip = utente
                 .flatMap(
-                        us -> municipalityService
-                                .findMunicipalityById(us.getDipendenteDiComune(),utenteLog.get())
-                                .map(Optional::of)
-                                .onErrorReturn(Optional.empty())
-                );
+                        us -> {
+                            //System.out.println("UTENTECompleto: " + us.getEmail());
+                            return municipalityService
+                                    .findMunicipalityById(us.getDipendenteDiComune(), utenteLog.get())
+                                    .map(Optional::of)
+                                    .onErrorReturn(Optional.empty());
+                        });
 
 
         Mono<Tuple3<Utente, Comune, Optional<Comune>>> combined = Mono.zip(utente, comuneRes, comuneDip);
 
-        Mono<UtenteResponse> utenteResponse = combined.map(UtenteResponse::makeUtenteResponse);
 
+
+        Mono<UtenteResponse> utenteResponse = combined.map(UtenteResponse::makeUtenteResponse);
+        //System.out.println("TEST");
         return utenteResponse.flatMap(er -> ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(fromObject(er)))

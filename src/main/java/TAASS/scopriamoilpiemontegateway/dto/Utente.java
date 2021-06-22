@@ -2,6 +2,7 @@ package TAASS.scopriamoilpiemontegateway.dto;
 
 
 import java.util.List;
+import java.util.Set;
 
 public class Utente {
 
@@ -22,6 +23,8 @@ public class Utente {
     private String password;
 
     List<Role> ruoli;
+
+    Set<Long> iscrizioni;
 
     private long dipendenteDiComune;    //comune del quale sono sindaco o pubblicatore
 
@@ -119,5 +122,13 @@ public class Utente {
 
     public void setDipendenteDiComune(long comune) {
         this.dipendenteDiComune = comune;
+    }
+
+    public Set<Long> getIscrizioni() {
+        return iscrizioni;
+    }
+
+    public void setIscrizioni(Set<Long> iscrizioni) {
+        this.iscrizioni = iscrizioni;
     }
 }
