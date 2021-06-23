@@ -3,14 +3,12 @@ package TAASS.scopriamoilpiemontegateway.config.users;
 import TAASS.scopriamoilpiemontegateway.config.proxies.MunicipalityServiceProxy;
 import TAASS.scopriamoilpiemontegateway.config.proxies.UserServiceProxy;
 import TAASS.scopriamoilpiemontegateway.dto.*;
-import TAASS.scopriamoilpiemontegateway.exceptions.EventNotFoundException;
 import TAASS.scopriamoilpiemontegateway.exceptions.UtenteNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 import reactor.util.function.Tuple3;
 
 import java.util.Optional;
@@ -39,36 +37,35 @@ public class UserHandlers {
 
         Mono<Utente> utente = user.flatMap(us -> {
             utenteLog.set(us);
-            //System.out.println("UTENTELog: "+ us.getEmail());
             return userService.findUserById(userId,us);
         });
 
 
-        Mono<Comune> comuneRes = utente
+        Mono<Optional<Comune>> comuneRes = utente
                 .flatMap(
-                        us -> {
-                            //System.out.println("UTENTECompleto: " + us.getEmail());
-                            return municipalityService
-                                    .findMunicipalityById(us.getComuneResidenza(), utenteLog.get());
-                        });
+                        us ->
+                             municipalityService
+                                    .findMunicipalityById(us.getComuneResidenza(), utenteLog.get())
+                                    .map(Optional::of)
+                                    .onErrorReturn(Optional.empty())
+                        );
 
         Mono<Optional<Comune>> comuneDip = utente
                 .flatMap(
-                        us -> {
-                            //System.out.println("UTENTECompleto: " + us.getEmail());
-                            return municipalityService
+                        us ->
+                             municipalityService
                                     .findMunicipalityById(us.getDipendenteDiComune(), utenteLog.get())
                                     .map(Optional::of)
-                                    .onErrorReturn(Optional.empty());
-                        });
+                                    .onErrorReturn(Optional.empty())
+
+                        );
 
 
-        Mono<Tuple3<Utente, Comune, Optional<Comune>>> combined = Mono.zip(utente, comuneRes, comuneDip);
-
+        Mono<Tuple3<Utente, Optional<Comune>, Optional<Comune>>> combined = Mono.zip(utente, comuneRes, comuneDip);
 
 
         Mono<UtenteResponse> utenteResponse = combined.map(UtenteResponse::makeUtenteResponse);
-        //System.out.println("TEST");
+
         return utenteResponse.flatMap(er -> ServerResponse.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(fromObject(er)))

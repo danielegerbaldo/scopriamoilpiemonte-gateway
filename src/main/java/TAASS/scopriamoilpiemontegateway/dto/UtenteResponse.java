@@ -29,14 +29,22 @@ public class UtenteResponse {
         this.dipendenteDiComune = null;
     }
 
-    public static UtenteResponse makeUtenteResponse(Tuple3<Utente, Comune, Optional<Comune>> info){
-       // System.out.println("RISPOSTA: Utente: " + info.getT1().getEmail() + " Comuner Res: " + info.getT2().getNome() + " Comune Dip: " + info.getT3().get().getNome() );
+    public static UtenteResponse makeUtenteResponse(Tuple3<Utente, Optional<Comune>, Optional<Comune>> info){
 
         UtenteResponse utenteResponse = new UtenteResponse(info.getT1());
-        utenteResponse.setComuneResidenza(info.getT2());
-        if(info.getT3().isPresent()){
-            utenteResponse.setDipendenteDiComune(info.getT3().get());
+
+        if (info.getT2().isPresent()) {
+            utenteResponse.setComuneResidenza(info.getT2().get());
+        } else {
+            utenteResponse.setComuneResidenza(null);
         }
+
+        if (info.getT3().isPresent()) {
+            utenteResponse.setDipendenteDiComune(info.getT3().get());
+        } else {
+            utenteResponse.setDipendenteDiComune(null);
+        }
+
 
         return utenteResponse;
     }

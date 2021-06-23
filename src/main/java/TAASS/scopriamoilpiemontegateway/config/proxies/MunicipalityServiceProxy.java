@@ -28,6 +28,10 @@ public class MunicipalityServiceProxy {
                 .header("X-auth-user-role",user.getRole())
                 .header("X-auth-user-id",String.valueOf(user.getId()))
                 .retrieve()
+                /*.onStatus(
+                        status -> status.value() == 404,
+                        clientResponse -> Mono.empty()
+                )*/
                 .bodyToMono(Comune.class);
         return response;
     }
