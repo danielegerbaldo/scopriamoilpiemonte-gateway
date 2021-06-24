@@ -18,12 +18,13 @@ public class UtenteResponse {
     private Comune dipendenteDiComune;
 
     public UtenteResponse (Utente utente){
+        this.id = utente.getId();
         this.nome = utente.getNome();
         this.cognome = utente.getCognome();
         this.cf = utente.getCf();
         this.telefono = utente.getTelefono();
         this.email = utente.getEmail();
-        this.password = utente.getPassword();
+        //this.password = utente.getPassword();
         this.ruoli = utente.getRuoli();
         this.comuneResidenza = null;
         this.dipendenteDiComune = null;
