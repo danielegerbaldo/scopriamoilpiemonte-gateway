@@ -3,10 +3,14 @@ package TAASS.scopriamoilpiemontegateway.config.proxies;
 import TAASS.scopriamoilpiemontegateway.config.events.EventDestination;
 import TAASS.scopriamoilpiemontegateway.dto.Evento;
 import TAASS.scopriamoilpiemontegateway.dto.UserDto;
+import TAASS.scopriamoilpiemontegateway.dto.Utente;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Service
 public class EventServiceProxy {
@@ -28,6 +32,17 @@ public class EventServiceProxy {
                 .header("X-auth-user-id",String.valueOf(user.getId()))
                 .retrieve()
                 .bodyToMono(Evento.class);
+
+        return response;
+
+    }
+
+    public Mono<List<Evento>> getNotExpiredEvents() {
+        Mono<List<Evento>> response = webClientBuilder.build()
+                .get()
+                .uri(eventDestinations.getEventServiceUrl() + "/api/v1/evento/non-scaduti")
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<Evento>>() {});
 
         return response;
 

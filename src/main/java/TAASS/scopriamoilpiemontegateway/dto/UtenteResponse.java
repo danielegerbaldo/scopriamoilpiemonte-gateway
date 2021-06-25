@@ -1,7 +1,6 @@
 package TAASS.scopriamoilpiemontegateway.dto;
 
 import reactor.util.function.Tuple3;
-
 import java.util.List;
 import java.util.Optional;
 

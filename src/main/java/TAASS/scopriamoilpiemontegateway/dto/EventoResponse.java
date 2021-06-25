@@ -3,10 +3,7 @@ package TAASS.scopriamoilpiemontegateway.dto;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuple3;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class EventoResponse {
     private Long id;
@@ -29,7 +26,7 @@ public class EventoResponse {
 
     private Utente proprietario;
 
-    private long comune;
+    private Comune comune;
 
     private String indirizzo;
 
@@ -51,13 +48,13 @@ public class EventoResponse {
         this.note = evento.getNote();
         this.tipoEvento = evento.getTipoEvento();
         this.data = evento.getData();
-        this.comune = evento.getComune();   //TODO: modifica
         this.indirizzo = evento.getIndirizzo();
         this.prezzo = evento.getPrezzo();
         this.latitudine = evento.getLatitudine();
         this.longitudine = evento.getLongitudine();
         proprietario = null;
         iscritti = null;
+        comune = null;
     }
 
     public static EventoResponse makeEventoResponse(Tuple3<Evento, Utente, List<Utente>> info){
@@ -67,7 +64,29 @@ public class EventoResponse {
         return eventoResponse;
     }
 
-    public EventoResponse() {
+
+    public static List<EventoResponse> makeEventoResponse(Tuple2<List<Evento>, List<Comune>> info){
+
+
+        HashMap<Long,Comune> mapComuni = new HashMap<>();
+
+        for (Comune co :
+                info.getT2()) {
+            mapComuni.put(co.getIstat(), co);
+        }
+
+        List<EventoResponse> eventiResponse = new ArrayList<>();
+
+        for (Evento ev :
+                info.getT1()){
+
+            EventoResponse response = new EventoResponse(ev);
+            response.setComune(mapComuni.get(ev.getComune()));
+            eventiResponse.add(response);
+        }
+
+
+        return eventiResponse;
     }
 
 
@@ -151,11 +170,11 @@ public class EventoResponse {
         this.proprietario = proprietario;
     }
 
-    public long getComune() {
+    public Comune getComune() {
         return comune;
     }
 
-    public void setComune(long comune) {
+    public void setComune(Comune comune) {
         this.comune = comune;
     }
 

@@ -45,7 +45,7 @@ public class UserHandlers {
                 .flatMap(
                         us ->
                              municipalityService
-                                    .findMunicipalityById(us.getComuneResidenza(), utenteLog.get())
+                                    .findMunicipalityById(us.getComuneResidenza())
                                     .map(Optional::of)
                                     .onErrorReturn(Optional.empty())
                         );
@@ -54,7 +54,7 @@ public class UserHandlers {
                 .flatMap(
                         us ->
                              municipalityService
-                                    .findMunicipalityById(us.getDipendenteDiComune(), utenteLog.get())
+                                    .findMunicipalityById(us.getDipendenteDiComune())
                                     .map(Optional::of)
                                     .onErrorReturn(Optional.empty())
 

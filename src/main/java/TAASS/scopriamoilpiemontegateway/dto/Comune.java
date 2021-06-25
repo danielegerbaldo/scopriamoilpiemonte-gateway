@@ -30,7 +30,7 @@ public class Comune {
         return istat;
     }
 
-    public void setIstat(Long id) {
+    public void setIstat(Long istat) {
         this.istat = istat;
     }
 
