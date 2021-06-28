@@ -42,8 +42,6 @@ spring:
           uri: lb://MUNICIPALITY-SERVICE
           predicates:
             Path=/api/v1/comune/**
-          filters:
-            - AuthFilter
       globalcors:
         corsConfigurations:
           '[/**]':
