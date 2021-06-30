@@ -25,7 +25,11 @@ spring:
         - id: sign-in-google-2
           uri: lb://USER-SERVICE
           predicates:
-            Path=/login
+            Path=/login/**
+        - id: sign-in-google-3
+          uri: lb://USER-SERVICE
+          predicates:
+            Path=/oauth2/**
         - id: sign-up
           uri: lb://USER-SERVICE
           predicates:
