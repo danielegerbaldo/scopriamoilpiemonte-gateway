@@ -41,6 +41,10 @@ public class Utente {
         this.dipendenteDiComune = dipendenteDiComune;
     }
 
+    public Utente(Long id) {
+        this.id = id;
+    }
+
     public Utente() {
     }
 

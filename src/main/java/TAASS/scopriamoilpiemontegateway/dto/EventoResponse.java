@@ -81,6 +81,7 @@ public class EventoResponse {
                 info.getT1()){
 
             EventoResponse response = new EventoResponse(ev);
+            response.setProprietario(new Utente(ev.getProprietario()));
             response.setComune(mapComuni.get(ev.getComune()));
             eventiResponse.add(response);
         }
