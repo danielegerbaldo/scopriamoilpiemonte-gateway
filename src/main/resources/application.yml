@@ -40,6 +40,10 @@ spring:
             Path=/api/v1/evento/**
           filters:
           - AuthFilter
+        - id: service-tipo-evento
+          uri: lb://EVENT-SERVICE
+          predicates:
+            Path=/api/v1/tipo-evento/**
         - id: service-user
           uri: lb://USER-SERVICE
           predicates:
