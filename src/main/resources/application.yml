@@ -1,25 +1,59 @@
 server:
   port: 80
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://servizio-registry:8010/eureka
 spring:
+  application:
+    name: ApiGateway
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
       routes:
-        - id: servizio-eventi
-          uri: 'http://servizio-eventi:8080'
+        - id: sign-in
+          uri: lb://USER-SERVICE
           predicates:
-            - Path=/api/v1/evento/**
-        - id: servizio-utenti
-          uri: 'http://servizio-utenti:8081'
+            Path=/api/v1/login
+        - id: sign-in-google
+          uri: lb://USER-SERVICE
           predicates:
-            - Path=/api/v1/utente/**
-        - id: servizio-sondaggi
-          uri: 'http://servizio-sondaggi:8082'
+            Path=/login/**
+        - id: sign-in-google-2
+          uri: lb://USER-SERVICE
           predicates:
-            - Path=/api/v1/sondaggi/**
-        - id: servizio-comuni
-          uri: 'http://servizio-comuni:8083'
+            Path=/oauth2/**
+        - id: sign-up
+          uri: lb://USER-SERVICE
           predicates:
-            - Path=/api/v1/comune/**
+            Path=/api/v1/signUp
+        - id: validateToken
+          uri: lb://USER-SERVICE
+          predicates:
+            Path=/api/v1/validateToken
+        - id: service-events
+          uri: lb://EVENT-SERVICE
+          predicates:
+            Path=/api/v1/evento/**
+          filters:
+          - AuthFilter
+        - id: service-tipo-evento
+          uri: lb://EVENT-SERVICE
+          predicates:
+            Path=/api/v1/tipo-evento/**
+        - id: service-user
+          uri: lb://USER-SERVICE
+          predicates:
+            Path=/api/v1/utente/**
+          filters:
+            - AuthFilter
+        - id: service-municipality
+          uri: lb://MUNICIPALITY-SERVICE
+          predicates:
+            Path=/api/v1/comune/**
       globalcors:
         corsConfigurations:
           '[/**]':
