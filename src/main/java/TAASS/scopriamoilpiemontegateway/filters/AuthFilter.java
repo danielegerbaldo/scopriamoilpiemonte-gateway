@@ -18,6 +18,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
     @Override
     public GatewayFilter apply(Config config) {
+
         return (exchange, chain) -> {
             if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 throw new RuntimeException("Missing authorization information");
@@ -38,9 +39,9 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                     .map(userDto -> {
                         exchange.getRequest()
                                 .mutate()
-                                .header("X-auth-user-id",String.valueOf(userDto.getId()))
-                                .header("X-auth-user-email",String.valueOf(userDto.getEmail()))
-                                .header("X-auth-user-role", userDto.getRole());
+                                .header("X-auth-user-role",String.valueOf(userDto.getRole()))
+                                .header("X-auth-user-id", String.valueOf(userDto.getId()))
+                                .header("X-auth-user-comune-dipendente-id", String.valueOf(userDto.getDipendenteDiComune()));
                         return exchange;
                     }).flatMap(chain::filter);
         };

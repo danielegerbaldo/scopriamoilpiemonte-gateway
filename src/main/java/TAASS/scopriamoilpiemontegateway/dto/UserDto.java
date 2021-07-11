@@ -11,6 +11,7 @@ public class UserDto {
     private long id;
     private String email;
     private String role;
+    private long dipendenteDiComune;
 
     public long getId() {
         return id;
@@ -22,5 +23,9 @@ public class UserDto {
 
     public String getEmail() {
         return email;
+    }
+
+    public long getDipendenteDiComune() {
+        return dipendenteDiComune;
     }
 }

@@ -18,6 +18,14 @@ spring:
           uri: lb://USER-SERVICE
           predicates:
             Path=/api/v1/login
+        - id: sign-in-google
+          uri: lb://USER-SERVICE
+          predicates:
+            Path=/login/**
+        - id: sign-in-google-2
+          uri: lb://USER-SERVICE
+          predicates:
+            Path=/oauth2/**
         - id: sign-up
           uri: lb://USER-SERVICE
           predicates:
@@ -32,6 +40,10 @@ spring:
             Path=/api/v1/evento/**
           filters:
           - AuthFilter
+        - id: service-tipo-evento
+          uri: lb://EVENT-SERVICE
+          predicates:
+            Path=/api/v1/tipo-evento/**
         - id: service-user
           uri: lb://USER-SERVICE
           predicates:
@@ -42,8 +54,6 @@ spring:
           uri: lb://MUNICIPALITY-SERVICE
           predicates:
             Path=/api/v1/comune/**
-          filters:
-            - AuthFilter
       globalcors:
         corsConfigurations:
           '[/**]':
