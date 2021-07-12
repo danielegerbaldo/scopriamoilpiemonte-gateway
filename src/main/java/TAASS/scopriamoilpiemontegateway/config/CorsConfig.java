@@ -11,7 +11,7 @@ public class CorsConfig implements WebFluxConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry corsRegistry) {
         corsRegistry.addMapping("/**")
-                .allowedOrigins("http://localhost:4200")
+                .allowedOrigins("http://93-41-149-178.ip82.fastwebnet.it")
                 .allowedHeaders("*")
                 .allowedMethods("*");
     }
