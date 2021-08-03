@@ -57,6 +57,6 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: "http://replace_with_your_domain.com"
+            allowedOrigins: "replace_with_your_domain.com"
             allowedHeaders: "*"
             allowedMethods: "*"
